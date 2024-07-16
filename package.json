@@ -8,7 +8,8 @@
   "description": "Extensible utility for saving and retrieving things via a Signed Cloud Server API.",
   "scripts": {
     "test-only": "jasmine",
-    "test": "npm run startTestServer && npm run test-only && npm run stopTestServer",
+    "test": "npm run installTestServer && npm run startTestServer && sleep 3 && npm run test-only && npm run stopTestServer",
+    "installTestServer": "npm explore @ki1r0y/signed-cloud-server -- npm install",
     "startTestServer": "npm explore @ki1r0y/signed-cloud-server -- npm run background",
     "stopTestServer": "npm explore @ki1r0y/signed-cloud-server -- npm stop"
   },

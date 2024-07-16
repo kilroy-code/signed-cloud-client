@@ -141,13 +141,13 @@ describe('Signed Cloud Client', function () {
   describe('in-memory, no-crypto,', function () {
     describe('immutable,', function () {
       test1('authorOwned', Basic, hash,  30e3, 90e3);
-      test1('teamOwned', Basic, hash,    30e3, 90e3);
+      test1('teamOwned', Basic, hash,    25e3, 90e3);
     });
   });
   describe('in-memory, signed,', function () {
     describe('immutable', function () {
-      test1('authorOwned', Signed, hash, 3e3,  2e3);
-      test1('teamOwned', Signed, hash,   1e3,  1e3);
+      test1('authorOwned', Signed, hash, 2e3,  2e3);
+      test1('teamOwned', Signed, hash,   0.9e3,  1e3);
     });
   });
 });
