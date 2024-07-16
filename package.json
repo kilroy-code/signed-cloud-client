@@ -1,5 +1,5 @@
 {
-  "name": "@ki1r0y/signed-cloud-client",
+  "name": "@kilroy-code/signed-cloud-client",
   "version": "0.0.1",
   "type": "module",
   "exports": {
@@ -32,7 +32,7 @@
     "url": "git+https://github.com/kilroy-code/signed-cloud-client.git"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
     "@ki1r0y/distributed-security": "^1.1.0"
