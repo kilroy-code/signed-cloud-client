@@ -7,7 +7,10 @@
   },
   "description": "Extensible utility for saving and retrieving things via a Signed Cloud Server API.",
   "scripts": {
-    "test": "jasmine"
+    "test-only": "jasmine",
+    "test": "npm run startTestServer && npm run test-only && npm run stopTestServer",
+    "startTestServer": "npm explore @ki1r0y/signed-cloud-server -- npm run background",
+    "stopTestServer": "npm explore @ki1r0y/signed-cloud-server -- npm stop"
   },
   "keywords": [
     "persistence",
@@ -20,6 +23,7 @@
   "author": "howard.stearns@gmail.com",
   "license": "MIT",
   "devDependencies": {
+    "@ki1r0y/signed-cloud-server": "^1.0.10",
     "jasmine": "^5.1.0"
   },
   "repository": {
@@ -28,6 +32,8 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
-  }  
-  
+  },
+  "dependencies": {
+    "@ki1r0y/distributed-security": "^1.1.0"
+  }
 }

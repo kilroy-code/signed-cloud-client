@@ -84,6 +84,7 @@ describe('Signed Cloud Client', function () {
     device = await Security.create(),
     me = await Security.create(device);
     team = await Security.create(me);
+    await Security.sign("exercise before timing tests", team); // Creating a tag doesn't cache it, which is expensive. (Might be creating a bunch.)
     hash = Security.encodeBase64url(await Security.hashText(JSON.stringify(canonicalized)));
 
     persistables.authorOwned = {owner: me, ...baseData};
@@ -131,7 +132,7 @@ describe('Signed Cloud Client', function () {
               retrieveElapsed = retrieved - startRetrieving,
               storesPerSecond = 1e6 / storeElapsed,
               retrievesPerSecond = 1e6 / retrieveElapsed;
-        console.log({label: `${collection.constructor.name}-${label}`, storeElapsed, retrieveElapsed, storesPerSecond, retrievesPerSecond});
+        console.log(`${collection.constructor.name}-${label} ${storesPerSecond.toFixed(0)}/${retrievesPerSecond.toFixed(0)} stores/retrieves per second`);
         expect(storesPerSecond).toBeGreaterThan(storeTime);
         expect(retrievesPerSecond).toBeGreaterThan(retrieveTime);
       }, 30e3);
@@ -139,14 +140,14 @@ describe('Signed Cloud Client', function () {
   }
   describe('in-memory, no-crypto,', function () {
     describe('immutable,', function () {
-      test1('authorOwned', Basic, hash, 30e3, 100e3);
-      test1('teamOwned', Basic, hash, 30e3, 90e3);
+      test1('authorOwned', Basic, hash,  30e3, 90e3);
+      test1('teamOwned', Basic, hash,    30e3, 90e3);
     });
   });
   describe('in-memory, signed,', function () {
     describe('immutable', function () {
-      test1('authorOwned', Signed, hash, 600, 2300);
-      test1('teamOwned', Signed, hash, 300, 400);
+      test1('authorOwned', Signed, hash, 3e3,  2e3);
+      test1('teamOwned', Signed, hash,   1e3,  1e3);
     });
   });
 });
