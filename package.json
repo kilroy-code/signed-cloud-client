@@ -1,0 +1,33 @@
+{
+  "name": "@ki1r0y/signed-cloud-client",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    "default": "./index.mjs"
+  },
+  "description": "Extensible utility for saving and retrieving things via a Signed Cloud Server API.",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "keywords": [
+    "persistence",
+    "cloud",
+    "client",
+    "browser",
+    "nodejs",
+    "cryptography"
+  ],
+  "author": "howard.stearns@gmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "jasmine": "^5.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kilroy-code/signed-cloud-client.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }  
+  
+}
