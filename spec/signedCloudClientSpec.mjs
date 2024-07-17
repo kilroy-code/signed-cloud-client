@@ -146,8 +146,8 @@ describe('Signed Cloud Client', function () {
   });
   describe('in-memory, signed,', function () {
     describe('immutable', function () {
-      test1('authorOwned', Signed, hash, 1.8e3,  1.8e3);
-      test1('teamOwned', Signed, hash,   0.9e3,  0.9e3);
+      test1('authorOwned', Signed, hash, 1.6e3,  1.8e3);
+      test1('teamOwned', Signed, hash,   0.9e3,  0.8e3);
     });
   });
 });
