@@ -20,26 +20,18 @@ import {Collection} from '../index.mjs';
 // - How various choices effect performance.
 
 
-const MemoryStorage = {
-  collections: {},
-  async store(collectionTag, tag, signature) {
-    const collection = this.collections[collectionTag] ||= {};
-    collection[tag] = signature;
-    return null; // Must not return undefined.
+// Identity
+export const SignatureTag = { // Tag comes from the signture subject claim.
+  async package(security, identity, options) {
+    const signed = await security.package(identity, options),
+          claims = Security.decodeClaims(signed);
+    return [signed, claims.sub];
   },
-  async retrieve(collectionTag, tag) {
-    return this.collections[collectionTag][tag];
+  unpackage(security, packaged, options) {
+    return security.unpackage(packaged, options);
   }
 };
-const NoSecurity = {
-  async package(identity, claims) {
-    return JSON.stringify({identity, claims});
-  },
-  unpackage(packaged, options) {
-    return JSON.parse(packaged);
-  }
-};
-const NoSecurityImmutable = {
+const HashIdentity = { // Generate a hash of the stringified identity.
   async package(security, identity, {owner, author, ...options}) {
     const cleanOptions = owner===author ? {owner, ...options} : {author, owner, ...options},
           packaged = security.package(identity, cleanOptions),
@@ -53,14 +45,54 @@ const NoSecurityImmutable = {
   }
 }
 
+// Security
+const Json = { // Just JSON.stringify/parse.
+  async package(identity, claims) {
+    return JSON.stringify({identity, claims});
+  },
+  unpackage(packaged, options) {
+    return JSON.parse(packaged);
+  }
+};
+export const Sign = { // Sign/verify.
+  package(identity, options) {
+    const {owner, author, time} = options, // fixme antecedent, 
+          headers = (owner === author) ? {tags: [owner], iss: owner, iat: time} : {team: owner, member: author, time};
+    return Security.sign(identity, headers);
+  },
+  async unpackage(packaged, options) {
+    const verified = await Security.verify(packaged, options),
+          {iss, act, iat} = verified.protectedHeader;
+    return {...verified.json, ...(act ? {author: act} : {}), owner: iss, timestamp: iat};
+  }
+};
+export const Encrypt = { // Encrypt/decrypt
+};
+
+
+// Storage
+const MemoryStorage = {
+  collections: {},
+  async store(collectionTag, tag, signature) {
+    const collection = this.collections[collectionTag] ||= {};
+    collection[tag] = signature;
+    return null; // Must not return undefined.
+  },
+  async retrieve(collectionTag, tag) {
+    return this.collections[collectionTag][tag];
+  }
+};
+
 
 class Basic extends Collection(Object) {
+  Identity = HashIdentity;
+  Security = Json;
   Storage = MemoryStorage;
-  Security = NoSecurity;
-  Identity = NoSecurityImmutable;
 }
 
 class Signed extends Collection(Object) {
+  Identity = SignatureTag;
+  Security = Sign;
   Storage = MemoryStorage;
 }
 
@@ -140,13 +172,13 @@ describe('Signed Cloud Client', function () {
   }
   describe('in-memory, no-crypto,', function () {
     describe('immutable,', function () {
-      test1('authorOwned', Basic, hash,  24e3, 90e3);
-      test1('teamOwned', Basic, hash,    24e3, 90e3);
+      test1('authorOwned', Basic, hash,  23e3, 90e3);
+      test1('teamOwned', Basic, hash,    23e3, 90e3);
     });
   });
   describe('in-memory, signed,', function () {
     describe('immutable', function () {
-      test1('authorOwned', Signed, hash, 1.6e3,  1.8e3);
+      test1('authorOwned', Signed, hash, 1.6e3,  1.7e3);
       test1('teamOwned', Signed, hash,   0.9e3,  0.8e3);
     });
   });
